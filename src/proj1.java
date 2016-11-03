@@ -12,28 +12,24 @@ public class proj1 {
 		size = in.nextInt();
 		matrix m = new matrix(size);
 		m.initialize();
-		// System.out.println("1st Random Generated Matrix: "); m.print(m.m1);
-		// System.out.println("2nd Random Generated Matrix: "); m.print(m.m2);
 
+		//Calculating time for Classic Matrix Multiplication
 		startTime = System.nanoTime();
-		temp = m.classic_mult(m.m1, m.m2);
+		temp = m.classicMult(m.m1, m.m2);
 		endTime = System.nanoTime();
-		// m.print(temp);
-		classicTime = (endTime - startTime) / m.count_classic;
+		classicTime = (endTime - startTime) / m.countClassic;
 
-		// System.out.println("\nDivide and Conquer Multiplication Matrix:");
+		// Calculating time for Divide and Conquer
 		startTime = System.nanoTime();
-		temp = m.divideandconq(m.m1, m.m2);
+		temp = m.divideAndConq(m.m1, m.m2);
 		endTime = System.nanoTime();
-		// m.print(temp);
-		divideandconqTime = (endTime - startTime) / m.count_divideandconq;
+		divideandconqTime = (endTime - startTime) / m.countDivideAndConq;
 
-		// System.out.println("\nStrassen Multiplication Matrix:");
+		// Calculating time for Strassen Multiplication
 		startTime = System.nanoTime();
 		temp = m.strassen(m.m1, m.m2);
 		endTime = System.nanoTime();
-		// m.print(temp);
-		strassenTime = (endTime - startTime) / m.count_strassen;
+		strassenTime = (endTime - startTime) / m.countStrassen;
 
 		System.out.println("Matrix Size: " + size);
 		System.out.println("Classic Total Time: " + classicTime);
@@ -42,9 +38,9 @@ public class proj1 {
 	}// end main
 
 	public static class matrix {
-		int count_classic = 0;
-		int count_divideandconq = 0;
-		int count_strassen = 0;
+		int countClassic = 0;
+		int countDivideAndConq = 0;
+		int countStrassen = 0;
 		int size;
 		int m1[][];
 		int m2[][];
@@ -59,8 +55,8 @@ public class proj1 {
 			Random r1 = new Random();
 			for (int a = 0; a < size; a++) {
 				for (int b = 0; b < size; b++) {
-					m1[a][b] = r1.nextInt(9);
-					m2[a][b] = r1.nextInt(9);
+					m1[a][b] = r1.nextInt(3);
+					m2[a][b] = r1.nextInt(3);
 				}
 				// System.out.println();
 			}
@@ -75,8 +71,8 @@ public class proj1 {
 			}
 		}
 
-		public int[][] divideandconq(int[][] a, int[][] b) {
-			count_divideandconq++;
+		public int[][] divideAndConq(int[][] a, int[][] b) {
+			countDivideAndConq++;
 			int n = a.length;
 			int[][] result = new int[n][n];
 
@@ -92,6 +88,7 @@ public class proj1 {
 				int[][] b21 = new int[n / 2][n / 2];
 				int[][] b22 = new int[n / 2][n / 2];
 
+				//int[][] copyFrom, int[][] copyTo, int startRow,int startCol
 				initialize(a, a11, 0, 0);
 				initialize(a, a12, 0, n / 2);
 				initialize(a, a21, n / 2, 0);
@@ -101,14 +98,14 @@ public class proj1 {
 				initialize(b, b21, n / 2, 0);
 				initialize(b, b22, n / 2, n / 2);
 
-				int[][] c11 = add(divideandconq(a11, b11),
-						divideandconq(a12, b21));
-				int[][] c12 = add(divideandconq(a11, b12),
-						divideandconq(a12, b22));
-				int[][] c21 = add(divideandconq(a21, b11),
-						divideandconq(a22, b21));
-				int[][] c22 = add(divideandconq(a21, b12),
-						divideandconq(a22, b22));
+				int[][] c11 = add(divideAndConq(a11, b11),
+						divideAndConq(a12, b21));
+				int[][] c12 = add(divideAndConq(a11, b12),
+						divideAndConq(a12, b22));
+				int[][] c21 = add(divideAndConq(a21, b11),
+						divideAndConq(a22, b21));
+				int[][] c22 = add(divideAndConq(a21, b12),
+						divideAndConq(a22, b22));
 
 				putTogether(c11, result, 0, 0);
 				putTogether(c12, result, 0, n / 2);
@@ -119,7 +116,7 @@ public class proj1 {
 		}
 
 		public int[][] strassen(int[][] a, int[][] b) {
-			count_strassen++;
+			countStrassen++;
 			int n = a.length;
 			int[][] result = new int[n][n];
 
@@ -144,19 +141,20 @@ public class proj1 {
 				initialize(b, b21, n / 2, 0);
 				initialize(b, b22, n / 2, n / 2);
 
-				int[][] _m1 = strassen(add(a11, a22), add(b11, b22));
-				int[][] _m2 = strassen(add(a21, a22), b11);
-				int[][] _m3 = strassen(a11, minus(b12, b22));
-				int[][] _m4 = strassen(a22, minus(b21, b11));
-				int[][] _m5 = strassen(add(a11, a12), b22);
-				int[][] _m6 = strassen(minus(a21, a11), add(b11, b12));
-				int[][] _m7 = strassen(minus(a12, a22), add(b21, b22));
+				int[][] p = strassen(add(a11, a22), add(b11, b22));
+				int[][] q= strassen(add(a21, a22), b11);
+				int[][] r= strassen(a11, minus(b12, b22));
+				int[][] s= strassen(a22, minus(b21, b11));
+				int[][] t= strassen(add(a11, a12), b22);
+				int[][] u= strassen(minus(a21, a11), add(b11, b12));
+				int[][] v= strassen(minus(a12, a22), add(b21, b22));
 
-				int[][] c11 = add(minus(add(_m1, _m4), _m5), _m7);
-				int[][] c12 = add(_m3, _m5);
-				int[][] c21 = add(_m2, _m4);
-				int[][] c22 = add(minus(add(_m1, _m3), _m2), _m6);
-
+				int[][] c11 = add(minus(add(p, s),t),v);
+				int[][] c12 = add(r, t);
+				int[][] c21 = add( q, s);
+				int[][] c22 = add(minus(add(p, r), q), u);
+				
+				//int[][] child, int[][] parent, int startRow,int startCol
 				putTogether(c11, result, 0, 0);
 				putTogether(c12, result, 0, n / 2);
 				putTogether(c21, result, n / 2, 0);
@@ -195,8 +193,8 @@ public class proj1 {
 			return result;
 		}
 
-		public int[][] classic_mult(int[][] m1, int[][] m2) {
-			count_classic++;
+		public int[][] classicMult(int[][] m1, int[][] m2) {
+			countClassic++;
 			int result[][] = new int[m1.length][m1.length];
 			for (int i = 0; i < m1.length; i++)
 				for (int j = 0; j < m1.length; j++) {
