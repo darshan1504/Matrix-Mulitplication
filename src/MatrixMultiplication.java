@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.Scanner;
 
-public class proj1 {
+public class MatrixMultiplication {
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		int size = 0;
@@ -14,13 +14,13 @@ public class proj1 {
 		dncavg = 0;
 		stracavg = 0;
 
-		System.out.print("Enter 'n * n' size matrix: ");
+		System.out.print("Enter 'n' size matrix: ");
 		size = in.nextInt();
 		matrix m = new matrix(size);
 		
-
+		//Testing
 		for (int testing = 1; testing <= 10; testing++) {
-			m.initialize();
+			m.initializeMatrix();
 			System.out.println("Initial testing:/n" + testing);
 			// Calculating time for Classic Matrix Multiplication
 			startTime = System.nanoTime();
@@ -36,9 +36,7 @@ public class proj1 {
 			endTime = System.nanoTime();
 			divideandconqTime = (endTime - startTime) / m.countDivideAndConq;
 			System.out.println("divideandconqTime:"+divideandconqTime);
-			System.out.println("endTime:"+endTime);
-			System.out.println("startTime:"+startTime);
-			System.out.println("countDivideAndConq:"+ m.countDivideAndConq);
+			
 			
 			// counting average
 			dncavg+=divideandconqTime;
@@ -61,13 +59,12 @@ public class proj1 {
 			System.out.println("Strassen Total Execution Time is: " + strassenTime);
 			
 			if( testing==10 ){
-				//System.out.println(+testing);
 				classicavg=classicavg/testing;
 				dncavg=dncavg/testing;
 				stracavg=stracavg/testing;
 				System.out.println("Total Classic average:"+classicavg);
 				System.out.println("Total Divide & Conquer average:"+dncavg);
-				System.out.println("total Strassens average:"+stracavg);
+				System.out.println("Total Strassens average:"+stracavg);
 				
 				
 				
@@ -77,7 +74,7 @@ public class proj1 {
 	}
 		
 		
-	}// end main
+	}
 
 	public static class matrix {
 		long countClassic = 0;
@@ -93,22 +90,21 @@ public class proj1 {
 			m2 = new int[size][size];
 		}
 
-		public void initialize() {
+		public void initializeMatrix() {
 			Random r1 = new Random();
 			for (int a = 0; a < size; a++) {
 				for (int b = 0; b < size; b++) {
 					m1[a][b] = r1.nextInt(3);
 					m2[a][b] = r1.nextInt(3);
 				}
-				// System.out.println();
 			}
 		}
 
-		public void initialize(int[][] copyFrom, int[][] copyTo, int startRow,
+		public void initializeToFrom(int[][] copyFromMatrix, int[][] copyToMatrix, int startRow,
 				int startCol) {
-			for (int a = 0, a2 = startRow; a < copyTo.length; a++, a2++) { // row
-				for (int b = 0, b2 = startCol; b < copyTo.length; b++, b2++) { // col
-					copyTo[a][b] = copyFrom[a2][b2];
+			for (int a = 0, a2 = startRow; a < copyToMatrix.length; a++, a2++) { // row
+				for (int b = 0, b2 = startCol; b < copyToMatrix.length; b++, b2++) { // col
+					copyToMatrix[a][b] = copyFromMatrix[a2][b2];
 				}
 			}
 		}
@@ -131,15 +127,15 @@ public class proj1 {
 				int[][] b21 = new int[n / 2][n / 2];
 				int[][] b22 = new int[n / 2][n / 2];
 
-				// int[][] copyFrom, int[][] copyTo, int startRow,int startCol
-				initialize(a, a11, 0, 0);
-				initialize(a, a12, 0, n / 2);
-				initialize(a, a21, n / 2, 0);
-				initialize(a, a22, n / 2, n / 2);
-				initialize(b, b11, 0, 0);
-				initialize(b, b12, 0, n / 2);
-				initialize(b, b21, n / 2, 0);
-				initialize(b, b22, n / 2, n / 2);
+				
+				initializeToFrom(a, a11, 0, 0);
+				initializeToFrom(a, a12, 0, n / 2);
+				initializeToFrom(a, a21, n / 2, 0);
+				initializeToFrom(a, a22, n / 2, n / 2);
+				initializeToFrom(b, b11, 0, 0);
+				initializeToFrom(b, b12, 0, n / 2);
+				initializeToFrom(b, b21, n / 2, 0);
+				initializeToFrom(b, b22, n / 2, n / 2);
 
 				int[][] c11 = add(divideAndConq(a11, b11),
 						divideAndConq(a12, b21));
@@ -150,10 +146,10 @@ public class proj1 {
 				int[][] c22 = add(divideAndConq(a21, b12),
 						divideAndConq(a22, b22));
 
-				putTogether(c11, result, 0, 0);
-				putTogether(c12, result, 0, n / 2);
-				putTogether(c21, result, n / 2, 0);
-				putTogether(c22, result, n / 2, n / 2);
+				JointMatrix(c11, result, 0, 0);
+				JointMatrix(c12, result, 0, n / 2);
+				JointMatrix(c21, result, n / 2, 0);
+				JointMatrix(c22, result, n / 2, n / 2);
 			}
 			return result;
 		}
@@ -175,14 +171,14 @@ public class proj1 {
 				int[][] b21 = new int[n / 2][n / 2];
 				int[][] b22 = new int[n / 2][n / 2];
 
-				initialize(a, a11, 0, 0);
-				initialize(a, a12, 0, n / 2);
-				initialize(a, a21, n / 2, 0);
-				initialize(a, a22, n / 2, n / 2);
-				initialize(b, b11, 0, 0);
-				initialize(b, b12, 0, n / 2);
-				initialize(b, b21, n / 2, 0);
-				initialize(b, b22, n / 2, n / 2);
+				initializeToFrom(a, a11, 0, 0);
+				initializeToFrom(a, a12, 0, n / 2);
+				initializeToFrom(a, a21, n / 2, 0);
+				initializeToFrom(a, a22, n / 2, n / 2);
+				initializeToFrom(b, b11, 0, 0);
+				initializeToFrom(b, b12, 0, n / 2);
+				initializeToFrom(b, b21, n / 2, 0);
+				initializeToFrom(b, b22, n / 2, n / 2);
 
 				int[][] p = strassen(add(a11, a22), add(b11, b22));
 				int[][] q = strassen(add(a21, a22), b11);
@@ -197,21 +193,21 @@ public class proj1 {
 				int[][] c21 = add(q, s);
 				int[][] c22 = add(minus(add(p, r), q), u);
 
-				// int[][] child, int[][] parent, int startRow,int startCol
-				putTogether(c11, result, 0, 0);
-				putTogether(c12, result, 0, n / 2);
-				putTogether(c21, result, n / 2, 0);
-				putTogether(c22, result, n / 2, n / 2);
+				
+				JointMatrix(c11, result, 0, 0);
+				JointMatrix(c12, result, 0, n / 2);
+				JointMatrix(c21, result, n / 2, 0);
+				JointMatrix(c22, result, n / 2, n / 2);
 
 			}
 			return result;
 		}
 
-		public void putTogether(int[][] child, int[][] parent, int startRow,
+		public void JointMatrix(int[][] childMatrix, int[][] parentMatrix, int startRow,
 				int startCol) {
-			for (int a = 0, a2 = startRow; a < child.length; a++, a2++) {
-				for (int b = 0, b2 = startCol; b < child.length; b++, b2++) {
-					parent[a2][b2] = child[a][b];
+			for (int a = 0, a2 = startRow; a < childMatrix.length; a++, a2++) {
+				for (int b = 0, b2 = startCol; b < childMatrix.length; b++, b2++) {
+					parentMatrix[a2][b2] = childMatrix[a][b];
 				}
 			}
 		}
@@ -256,5 +252,5 @@ public class proj1 {
 				System.out.println();
 			}
 		}
-	}// end class matrix
-}// end class proj1
+	}
+}
